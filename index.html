@@ -1,75 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Style</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url('https://via.placeholder.com/1920x1080');
-            background-size: cover;
-            color: white;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        .anime-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 50px;
-        }
-        .anime-card {
-            background: rgba(41, 41, 61, 0.9);
-            border-radius: 10px;
-            margin: 10px;
-            padding: 15px;
-            width: 250px;
-            text-align: center;
-            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
-        }
-        .anime-card img {
-            width: 100%;
-            border-radius: 10px;
-        }
-        button {
-            margin-top: 10px;
-            padding: 10px;
-            background: #ff6b81;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        button:hover {
-            background: #ff4757;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Multi Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
+      background: #f5f5f7;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-top: 30px;
+      color: #1d1d1f;
+    }
+
+    .container {
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 20px;
+      padding: 30px;
+      margin-top: 20px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    select, input, button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    button {
+      background-color: #0071e3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005bb5;
+    }
+
+    #inputs input {
+      margin-bottom: 10px;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #1d1d1f;
+      text-align: center;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #888;
+    }
+
+    .header {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="anime-container">
-        <div class="anime-card" id="anime1">
-            <img src="https://via.placeholder.com/250" alt="Anime 1">
-            <h3>Naruto</h3>
-            <p>A ninja's journey to becoming Hokage.</p>
-            <button onclick="changeAnime(1)">Next Anime</button>
-        </div>
-    </div>
+  <h1>📐 Area, Perimeter & Calculator App</h1>
 
-    <script>
-        const animeList = [
-            { name: "Naruto", desc: "A ninja's journey to becoming Hokage.", img: "https://via.placeholder.com/250" },
-            { name: "One Piece", desc: "A pirate's adventure for the One Piece treasure.", img: "https://via.placeholder.com/250" },
-            { name: "Attack on Titan", desc: "Humanity's battle against Titans.", img: "https://via.placeholder.com/250" }
-        ];
-        let index = 0;
-        function changeAnime() {
-            index = (index + 1) % animeList.length;
-            document.querySelector(".anime-card img").src = animeList[index].img;
-            document.querySelector(".anime-card h3").innerText = animeList[index].name;
-            document.querySelector(".anime-card p").innerText = animeList[index].desc;
+  <div class="container">
+    <div class="header">Normal Calculator</div>
+    <input type="text" id="normalCalc" placeholder="Enter expression (e.g. 2+2*5)">
+    <button onclick="calcExpression()">Calculate</button>
+    <div id="normalResult">Result: —</div>
+  </div>
+
+  <div class="container">
+    <div class="header">Geometry Calculator</div>
+    <select id="shape" onchange="showInputs()">
+      <option value="">-- Select Shape --</option>
+      <option value="Rectangle">Rectangle (Area & Perimeter)</option>
+      <option value="Square">Square (Area & Perimeter)</option>
+      <option value="Circle">Circle (Area & Perimeter)</option>
+      <option value="Triangle">Triangle (Area)</option>
+      <option value="Heron">Triangle (Heron’s)</option>
+      <option value="Rhombus">Rhombus (Area)</option>
+      <option value="Parallelogram">Parallelogram (Area & Perimeter)</option>
+      <option value="Trapezium">Trapezium (Area)</option>
+    </select>
+
+    <div id="inputs"></div>
+    <button onclick="calculate()">Calculate</button>
+    <div id="result">Result: —</div>
+  </div>
+
+  <footer>Made with ❤️ by GAMERCYBORG_INC</footer>
+
+  <script>
+    const inputsDiv = document.getElementById("inputs");
+    const resultDiv = document.getElementById("result");
+    const normalResult = document.getElementById("normalResult");
+
+    const shapeInputs = {
+      Rectangle: ["Length", "Breadth"],
+      Square: ["Side"],
+      Circle: ["Radius"],
+      Triangle: ["Base", "Height"],
+      Heron: ["Side A", "Side B", "Side C"],
+      Rhombus: ["Diagonal 1", "Diagonal 2"],
+      Parallelogram: ["Base", "Height", "Side"],
+      Trapezium: ["Base 1", "Base 2", "Height"]
+    };
+
+    function showInputs() {
+      inputsDiv.innerHTML = "";
+      resultDiv.textContent = "Result: —";
+      const shape = document.getElementById("shape").value;
+      if (!shapeInputs[shape]) return;
+      shapeInputs[shape].forEach(label => {
+        const input = document.createElement("input");
+        input.placeholder = label;
+        input.setAttribute("data-label", label);
+        inputsDiv.appendChild(input);
+      });
+    }
+
+    function calcExpression() {
+      const expr = document.getElementById("normalCalc").value;
+      try {
+        const result = eval(expr);
+        normalResult.textContent = `Result: ${result}`;
+      } catch {
+        normalResult.textContent = "Result: Error";
+      }
+    }
+
+    function calculate() {
+      const shape = document.getElementById("shape").value;
+      const inputs = Array.from(inputsDiv.querySelectorAll("input")).map(i => parseFloat(i.value));
+
+      let result = "";
+      try {
+        switch (shape) {
+          case "Rectangle":
+            let [l, b] = inputs;
+            result = `Area: ${l * b} cm², Perimeter: ${2 * (l + b)} cm`;
+            break;
+          case "Square":
+            let [s] = inputs;
+            result = `Area: ${s * s} cm², Perimeter: ${4 * s} cm`;
+            break;
+          case "Circle":
+            let [r] = inputs;
+            result = `Area: ${(Math.PI * r * r).toFixed(2)} cm², Circumference: ${(2 * Math.PI * r).toFixed(2)} cm`;
+            break;
+          case "Triangle":
+            let [base, height] = inputs;
+            result = `Area: ${(0.5 * base * height).toFixed(2)} cm²`;
+            break;
+          case "Heron":
+            let [a, b2, c] = inputs;
+            let s2 = (a + b2 + c) / 2;
+            let area = Math.sqrt(s2 * (s2 - a) * (s2 - b2) * (s2 - c));
+            result = `Area: ${area.toFixed(2)} cm²`;
+            break;
+          case "Rhombus":
+            let [d1, d2] = inputs;
+            result = `Area: ${(0.5 * d1 * d2).toFixed(2)} cm²`;
+            break;
+          case "Parallelogram":
+            let [baseP, heightP, sideP] = inputs;
+            result = `Area: ${(baseP * heightP).toFixed(2)} cm², Perimeter: ${(2 * (baseP + sideP)).toFixed(2)} cm`;
+            break;
+          case "Trapezium":
+            let [b1, b2t, h] = inputs;
+            result = `Area: ${(0.5 * (b1 + b2t) * h).toFixed(2)} cm²`;
+            break;
+          default:
+            result = "Please select a shape";
         }
-    </script>
+      } catch (e) {
+        result = "Invalid input!";
+      }
+
+      resultDiv.textContent = result;
+    }
+  </script>
 </body>
 </html>
